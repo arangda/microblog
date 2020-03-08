@@ -13,3 +13,5 @@ class Config(object):
     MAIL_USERNAME = '273890638@qq.com'
     MAIL_PASSWORD = 'xg273890638'
     ADMINS = ['273890638@qq.com']
+
+    POSTS_PER_PAGE = 3
