@@ -20,6 +20,9 @@
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
+        <p>忘记密码？
+            <a href="{{ url_for('reset_password_request') }}">点击这里重置</a>
+        </p>
         <p>New User? <a href="{{ url_for('register') }}">注册!</a></p>
     </form>
 {% endblock %}

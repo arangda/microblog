@@ -14,4 +14,7 @@ class Config(object):
     MAIL_PASSWORD = 'xg273890638'
     ADMINS = ['273890638@qq.com']
 
+    #MAIL_SERVER='localhost'
+    #MAIL_PORT=8025
+
     POSTS_PER_PAGE = 3
