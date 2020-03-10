@@ -18,3 +18,5 @@ class Config(object):
     #MAIL_PORT=8025
 
     POSTS_PER_PAGE = 3
+
+    LANGUAGES = ['zh','en']
