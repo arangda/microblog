@@ -11,9 +11,9 @@
             </div>
         </div>
         <br>
-        <p>{{ _('New User') }}? <a href="{{ url_for('register') }}">注册!</a></p>
+        <p>{{ _('New User') }}? <a href="{{ url_for('auth.register') }}">注册!</a></p>
         <p>忘记密码？
-            <a href="{{ url_for('reset_password_request') }}">点击这里重置</a>
+            <a href="{{ url_for('auth.reset_password_request') }}">点击这里重置</a>
         </p>
 
     </form>

@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,BooleanField,SubmitField,TextAreaField
-from wtforms.validators import DataRequired,ValidationError,Email,EqualTo,Length
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from flask_babel import _, lazy_gettext as _l
 from app.models import User
-from flask_babel import lazy_gettext as _l
 
 class LoginForm(FlaskForm):
     username = StringField(_l('Username'),validators=[DataRequired()])
@@ -27,17 +27,6 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('请使用其他email地址')
-
-
-class EditProfileForm(FlaskForm):
-    username = StringField('Username',validators=[DataRequired()])
-    about_me = TextAreaField('About me',validators=[Length(min=0,max=140)])
-    submit = SubmitField('Submit')
-
-class PostForm(FlaskForm):
-    post = TextAreaField('说点啥',validators=[
-        DataRequired(),Length(min=1,max=140)])
-    submit = SubmitField('提交')
 
 
 class ResetPasswordRequestForm(FlaskForm):
