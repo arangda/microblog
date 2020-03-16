@@ -20,3 +20,5 @@ class Config(object):
     POSTS_PER_PAGE = 3
 
     LANGUAGES = ['zh','en']
+
+    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'
