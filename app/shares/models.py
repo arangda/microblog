@@ -31,9 +31,9 @@ class Category(db.Model):
 
     def delete(self):
         default_category = Category.query.get(1)
-        posts = self.posts[:]
-        for post in posts:
-            post.category = default_category
+        shares = self.shares[:]
+        for share in shares:
+            share.category = default_category
         db.session.delete(self)
         db.session.commit()
 
