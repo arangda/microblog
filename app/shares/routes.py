@@ -1,5 +1,5 @@
 from app import db
-from flask import render_template,flash
+from flask import render_template,flash,request,redirect
 from app.shares import bp
 from flask_login import login_required
 from app.shares.forms import ShareForm,CategoryForm
@@ -44,8 +44,12 @@ def new_category():
 @bp.route('/category/manage')
 @login_required
 def manage_category():
-    categories = Category.query.order_by(Category.name).all()
-    return render_template('share/manage_category.html',categories=categories)
+    page = request.args.get('page',1,type=int)
+    pagination = Category.query.order_by(Category.id.desc()).paginate(
+        page,per_page=20
+    )
+    categories = pagination.items
+    return render_template('share/manage_category.html',page=page,pagination=pagination,categories=categories)
 
 
 

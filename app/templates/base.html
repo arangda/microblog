@@ -33,7 +33,7 @@
               {{ render_nav_item('auth.logout', '退出',None,True) }}
       
               {% else %}
-              <!--{{ render_nav_item('users.register', '注册',None,True) }}-->
+              <!--{{ render_nav_item('auth.register', '注册',None,True) }}-->
               {{ render_nav_item('auth.login', '登录',None,True) }}
               {% endif %}
             </ul>
@@ -43,7 +43,7 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container" style="padding-top:60px;">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
