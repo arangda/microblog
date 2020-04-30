@@ -1,11 +1,57 @@
 {% extends "base.html" %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
 
+{% block title %}股票管理{% endblock %}
 
 {% block app_content %}
-    <h1>share</h1>
-    <div class="row">
-        <div class="col-md-4">
-            <a href="{{ url_for('shares.add_share') }}">添加share</a>
-        </div>
+    <div class="page-header">
+        <h1>股票
+            <small class="text-muted">{{ pagination.total }}</small>
+            <span class="float-right"><a class="btn btn-primary btn-sm" href="{{ url_for('shares.add_share') }}" >添加share</a></span>
+        </h1>
+        <form class="form-inline my-2 my-lg-0" action="{{ url_for('.share_search') }}">
+            <input type="text" name="q" class="input-large form-control mr-sm-1" style="width:400px;" placeholder="输入搜索词..."
+                   required>
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">
+                搜索
+            </button>
+        </form>
     </div>
+    {% if shares %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th style="width:5%;">No.</th>
+            <th style="width:30%;">name</th>
+            <th style="width:10%;">Category</th>
+            <th style="width:10%;">code</th>
+            <th style="width:30%;">Actions</th>
+        </tr>
+        </thead>
+        {% for share in shares %}
+    
+        <tr>
+            <td>{{ loop.index + ((page - 1) * 50) }}</td>
+            <td><a href="{{ url_for('shares.show_share', share_id=share.id) }}">{{ share.name }}</a></td>
+            <td><a href="{{ url_for('shares.show_category', category_name=share.category.english_name) }}">{{ share.category.name }}</a>
+            </td>
+            <td>{{ share.code}}</td>
+            <td>
+
+                <a class="btn btn-info btn-sm" href="{{ url_for('.update_share', share_id=share.id) }}">修改</a>
+                <form class="inline" method="post"
+                      action="{{ url_for('.delete_share', share_id=share.id, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">删除
+                    </button>
+                </form>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% else %}
+    <div class="tip"><h5>No shares.</h5></div>
+    {% endif %}
 {% endblock %}

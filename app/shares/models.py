@@ -8,8 +8,8 @@ tagging = db.Table('tagging',
 )
 class Share(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(100),index=True)
-    code = db.Column(db.String(20))
+    name = db.Column(db.String(100),index=True,unique=True)
+    code = db.Column(db.String(20),unique=True)
     timestamp = db.Column(db.DateTime,index=True,default=datetime.utcnow)
     intro = db.Column(db.Text(16777216), nullable=False)
     markdown = db.Column(db.Text(16777216), nullable=True)

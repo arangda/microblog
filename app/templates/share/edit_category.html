@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}New Category{% endblock %}
+
+{% block app_content %}
+    <div class="page-header">
+        <h1>修改行业</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{ render_form(form) }}
+        </div>
+    </div>
+{% endblock %}

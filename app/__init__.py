@@ -12,6 +12,7 @@ from flask_babel import Babel, lazy_gettext as _l
 from config import Config
 from redis import Redis
 import rq
+from flask_wtf.csrf import CSRFProtect
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -22,6 +23,7 @@ mail = Mail()
 bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
+csrf = CSRFProtect()
 
 
 def create_app(config_class=Config):
@@ -35,6 +37,7 @@ def create_app(config_class=Config):
     bootstrap.init_app(app)
     moment.init_app(app)
     babel.init_app(app)
+    csrf.init_app(app)
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     app.task_queue = rq.Queue('microblog-tasks', connection=app.redis)

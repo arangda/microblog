@@ -8,7 +8,7 @@ class ShareForm(FlaskForm):
     name = StringField('Name')
     code = StringField('Code',validators=[DataRequired()])
     category = SelectField('Category',coerce=int,default=0)
-    intro = TextAreaField('Content')
+    markdown = TextAreaField('Content')
     submit = SubmitField('提交')
     
     def __init__(self,*args,**kwargs):

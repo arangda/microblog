@@ -48,6 +48,7 @@ PyJWT = "==1.7.1"
 WTForms = "==2.2.1"
 bootstrap-flask = "*"
 unidecode = "*"
+mistune = "*"
 
 [requires]
 python_version = "3.7"

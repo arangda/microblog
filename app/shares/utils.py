@@ -9,6 +9,7 @@ from flask_login  import current_user
 
 import re
 from unidecode import unidecode
+import mistune
 '''
 def highlight(html):
     soup = BeautifulSoup(html)
@@ -28,21 +29,7 @@ def highlight(html):
     return Markup(soup)
 
 
-class MyRenderer(mistune.Renderer):
-    def block_code(self, code, lang):
-        if not lang:
-            lexer = guess_lexer(mistune.escape(code.strip()))
-        else:
-            lexer = get_lexer_by_name(lang, stripall=True)
-        formatter = HtmlFormatter()
-        return highlight(code, lexer, formatter)
 
-
-
-def marktohtml(marktext):
-    renderer = MyRenderer()
-    md = mistune.Markdown(renderer=renderer)
-    return md.render(marktext)
 
 def save_image(file):
     random_hex = secrets.token_hex(8)
@@ -67,6 +54,20 @@ def save_image(file):
     return pic_name
 
 '''
+class MyRenderer(mistune.Renderer):
+    def block_code(self, code, lang):
+        if not lang:
+            lexer = guess_lexer(mistune.escape(code.strip()))
+        else:
+            lexer = get_lexer_by_name(lang, stripall=True)
+        formatter = HtmlFormatter()
+        return highlight(code, lexer, formatter)
+
+def marktohtml(marktext):
+    renderer = MyRenderer()
+    md = mistune.Markdown(renderer=renderer)
+    return md.render(marktext)
+
 # 生成slug
 from app.thirdapps.baidutransAPI import transit
 _punct_re = re.compile(r'[\t !":#$%&\'()*\-\+/<=>?@\[\\\]^_`{|},.]+')
