@@ -1,1 +1,5 @@
 .inline{display:inline;}
+#tag-form, #description-form {
+    display: none;
+    margin: 20px 0;
+  }

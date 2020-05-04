@@ -26,3 +26,8 @@ class CategoryForm(FlaskForm):
     #def validate_name(self,field):
     #    if Category.query.filter_by(name=field.data).first():
     #        raise ValidationError('类名已经存在')
+
+
+class TagForm(FlaskForm):
+    tag = StringField('添加Tag(用"#"隔开)',validators=[Optional(),Length(0,64)])
+    submit = SubmitField()

@@ -77,3 +77,11 @@ def slugify(text,delim=u'-'):
     for word in _punct_re.split(newtext.lower()):
         result.extend(unidecode(word).lower().split())
     return delim.join(result)
+
+
+def flash_errors(form):
+    for field,errors in form.errors.items():
+        for error in errors:
+            flash("Error in the %s field - %s" % (
+                getattr(form,field).label.text,error
+            ))

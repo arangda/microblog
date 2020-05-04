@@ -28,7 +28,7 @@
             <ul class="navbar-nav ml-auto">
               {{ render_nav_item('main.index', '首页',None,True) }}
               {% if current_user.is_authenticated %}
-              {{ render_nav_item('shares.gupiao', '股票',None,True) }}
+              {{ render_nav_item('shares.index', '股票',None,True) }}
               {{ render_nav_item('shares.manage_category', '管理行业',None,True) }}
               {{ render_nav_item('auth.logout', '退出',None,True) }}
       
@@ -47,23 +47,15 @@
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        {% if current_user.is_authenticated %}
-        {% with tasks = current_user.get_tasks_in_progress() %}
-        {% if tasks %}
-            {% for task in tasks %}
-            <div class="alert alert-success" role="alert">
-                {{ task.description }}
-                <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
             </div>
             {% endfor %}
         {% endif %}
         {% endwith %}
-        {% endif %}
+
+       
         {# application content needs to be provided in the app_content block #}
         {% block app_content %}{% endblock %}
     </div>

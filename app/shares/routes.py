@@ -2,9 +2,9 @@ from app import db
 from flask import render_template,flash,request,redirect,url_for
 from app.shares import bp
 from flask_login import login_required
-from app.shares.forms import ShareForm,CategoryForm
-from app.shares.models import Share,Category
-from app.shares.utils import slugify,marktohtml
+from app.shares.forms import ShareForm,CategoryForm,TagForm
+from app.shares.models import Share,Category,Tag
+from app.shares.utils import slugify,marktohtml,flash_errors
 
 @bp.route('/gupiao')
 @login_required
@@ -61,7 +61,7 @@ def update_share(share_id):
         share.markdown = form.markdown.data
         share.intro = marktohtml(form.markdown.data)
         db.session.commit()
-        flash('文章已更新!', 'success')
+        flash('股票已更新!', 'success')
         return redirect(url_for('shares.show_share',share_id=share.id))
     elif request.method == 'GET':
         form.name.data = share.name
@@ -80,15 +80,34 @@ def delete_share(share_id):
     db.session.delete(share)
     db.session.commit()
     flash('Your share has been deleted!', 'success')
-    return redirect(url_for('shares.gupiao'))
+    return redirect(url_for('shares.index'))
 
 
 @bp.route('/<int:share_id>',methods=['GET','POST'])
 def show_share(share_id):
     share = Share.query.filter_by(id=share_id).first_or_404()
 
-    share.views = share.views + 1  #此处应该同一ip地址的人在比如几秒内访问不加1
-    return render_template('share/show_share.html')
+    share.views = share.views + 1  
+    tag_form = TagForm()
+    return render_template('share/show_share.html',share=share,tag_form=tag_form)
+
+@bp.route('/n/<int:share_id>')
+def share_next(share_id):
+    share = Share.query.get_or_404(share_id)
+    share_n = Share.query.filter(Share.id < share_id).order_by(Share.id.desc()).first()
+    if share_n is None:
+        flash('已经是最后了','info')
+        return redirect(url_for('.show_share',share_id=share_id))
+    return redirect(url_for('.show_share',share_id=share_n.id))
+
+@bp.route('/p/<int:share_id>')
+def share_previous(share_id):
+    share = Share.query.get_or_404(share_id)
+    share_p = Share.query.filter(Share.id > share_id).order_by(Share.id.asc()).first()
+    if share_p is None:
+        flash('已经是最前了','info')
+        return redirect(url_for('.show_share',share_id=share_id))
+    return redirect(url_for('.show_share',share_id=share_p.id))
 
 @bp.route('/category/new',methods=['GET','POST'])
 @login_required
@@ -159,3 +178,51 @@ def show_category(category_name,year=None):
     shares = pagination.items
     return render_template('home.html',subtitle='分类:'+category.name,pagination=pagination,shares=shares)
 
+
+@bp.route('/tag-<string:english_name>')
+def show_tag(english_name):
+    tag = Tag.query.filter_by(english_name=english_name).first_or_404()
+    page = request.args.get('page',1,type=int)
+    per_page = 50
+    pagination = Share.query.with_parent(tag).order_by(Share.id.desc()).paginate(page,per_page)
+    shares = pagination.items
+
+    return render_template('home.html',subtitle='标签:'+tag.name,pagination=pagination,shares=shares)
+
+
+@bp.route('/share/<int:share_id>/tag/new',methods=['POST'])
+@login_required
+def new_tag(share_id):
+    share = Share.query.get_or_404(share_id)
+    form = TagForm()
+    if form.validate_on_submit():
+        for name in form.tag.data.split("#"):   #以"#"好分隔tag
+            lname = name.lower()
+            tag = Tag.query.filter_by(name=lname).first()
+            if tag is None:
+                tag = Tag(name=lname,english_name=slugify(lname))
+                db.session.add(tag)
+                db.session.commit()
+            if tag not in share.tags:
+                share.tags.append(tag)
+                db.session.commit()
+        flash('Tag 添加成功','success')
+    
+    flash_errors(form)
+    return redirect(url_for('.show_share',share_id=share.id))
+
+
+@bp.route('/delete/tag/<int:share_id>/<int:tag_id>',methods=['POST'])
+@login_required
+def delete_tag(share_id,tag_id):
+    share = Share.query.get_or_404(share_id)
+    tag = Tag.query.get_or_404(tag_id)
+    share.tags.remove(tag)
+    db.session.commit()
+
+    if not tag.shares:
+        db.session.delete(tag)
+        db.session.commit()
+
+    flash('标签已删除。','info')
+    return redirect(url_for('.show_share',share_id=share.id))
